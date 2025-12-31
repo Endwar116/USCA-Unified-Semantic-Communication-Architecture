@@ -1,0 +1,36 @@
+```gitignore
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# Environment files
+.env
+.env.local
+*.env.*
+
+# Editors and IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies and build artifacts
+venv/
+.venv/
+pip-wheel-metadata/
+.coverage
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+.tox/
+dist/
+build/
+*.egg-info/
+```
