@@ -119,7 +119,9 @@ class SemanticIntegrity:
         "maybe", "perhaps", "probably", "might", "could be"
     ]
     
-    def __init__(self, secret_key: str = "default-key"):
+    def __init__(self, secret_key: str = None):
+        if secret_key is None:
+            raise ValueError("secret_key must be provided and cannot be None")
         self.secret_key = secret_key.encode('utf-8')
         self._compiled_patterns = [
             re.compile(p, re.IGNORECASE) for p in self.HALLUCINATION_PATTERNS
@@ -296,7 +298,8 @@ class SemanticIntegrity:
         
         # 雜湊關鍵詞
         keyword_str = '|'.join(keywords)
-        return hashlib.sha256(keyword_str.encode()).hexdigest()
+        # 使用HMAC增强安全性，防止通过语义哈希推断原始内容
+        return hmac.new(self.secret_key, keyword_str.encode(), hashlib.sha256).hexdigest()
     
     def _compute_structure_hash(self, content: Any) -> str:
         """計算結構雜湊"""

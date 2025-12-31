@@ -18,6 +18,7 @@ USCA 協議棧位置: L3 (Transport Layer)
 import uuid
 import hashlib
 import hmac
+import json
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional, Tuple
 from dataclasses import dataclass, field
@@ -443,7 +444,8 @@ class SIT_Handshake:
         """計算 HMAC 簽名"""
         # 移除簽名欄位
         data_copy = {k: v for k, v in data.items() if k != 'signature'}
-        payload = str(sorted(data_copy.items())).encode('utf-8')
+        # 使用 JSON 序列化以確保一致的格式
+        payload = json.dumps(data_copy, sort_keys=True, ensure_ascii=False).encode('utf-8')
         return hmac.new(self.secret_key, payload, hashlib.sha256).hexdigest()
     
     def _verify_signature(self, data: Dict, signature: str) -> bool:

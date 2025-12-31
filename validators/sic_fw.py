@@ -83,18 +83,47 @@ class SIC_FW:
         (r"(?i)act\s+as\s+if", "role_hijacking"),
         (r"(?i)system\s*prompt", "prompt_extraction"),
         (r"(?i)reveal\s+.*instructions", "prompt_extraction"),
+        (r"(?i)never\s+.*mind", "prompt_injection"),
+        (r"(?i)disregard\s+.*previous", "prompt_injection"),
+        (r"(?i)all\s+your\s+previous", "prompt_injection"),
+        (r"(?i)output\s+.*above\s+message", "prompt_injection"),
+        (r"(?i)above\s+conversation", "prompt_injection"),
+        (r"(?i)jailbreak", "prompt_injection"),
+        (r"(?i)##\s+system", "prompt_injection"),
+        (r"(?i)\*\*\s*system", "prompt_injection"),
         
         # SQL 注入
         (r"(?i)(drop|delete|truncate)\s+table", "sql_injection"),
         (r"(?i)(insert|update)\s+into", "sql_injection"),
         (r"(?i)union\s+select", "sql_injection"),
+        (r"(?i)'?\s+or\s+1\s*=\s*1\s*--?", "sql_injection"),
+        (r"(?i)';\s*drop\s+table", "sql_injection"),
+        (r"(?i)exec\s*\(", "sql_injection"),
+        (r"(?i)sp_executesql", "sql_injection"),
         
         # XSS / 代碼注入
         (r"(?i)<script[^>]*>", "xss_injection"),
         (r"(?i)javascript:", "xss_injection"),
-        (r"(?i)on(load|error|click)\s*=", "xss_injection"),
+        (r"(?i)on(load|error|click|mouseover|focus)\s*=", "xss_injection"),
         (r"(?i)eval\s*\(", "code_injection"),
         (r"(?i)exec\s*\(", "code_injection"),
+        (r"(?i)execfile\s*\(", "code_injection"),
+        (r"(?i)compile\s*\(", "code_injection"),
+        (r"(?i)open\s*\(", "file_access"),
+        (r"(?i)subprocess", "code_injection"),
+        (r"(?i)os\.", "code_injection"),
+        (r"(?i)import\s+os", "code_injection"),
+        (r"(?i)import\s+subprocess", "code_injection"),
+        (r"(?i)import\s+sys", "code_injection"),
+        (r"(?i)import\s+eval", "code_injection"),
+        (r"(?i)shell\s+command", "code_injection"),
+        (r"(?i)command\s+line", "code_injection"),
+        
+        # 其他恶意模式
+        (r"(?i)password\s*:", "credential_request"),
+        (r"(?i)api\s*key", "credential_request"),
+        (r"(?i)token\s*:", "credential_request"),
+        (r"(?i)secret\s*:", "credential_request"),
     ]
     
     # 禁止欄位
@@ -142,8 +171,22 @@ class SIC_FW:
     
     def _load_policy(self, path: str) -> Dict:
         """載入政策文件"""
+        import os
+        # 防止路徑遍歷攻擊
+        # 规范化路径并检查是否在允许的目录内
+        normalized_path = os.path.normpath(path)
+        if normalized_path.startswith('/') and not normalized_path.startswith('/workspace/'):
+            # 如果是绝对路径但不在/workspace下，拒绝访问
+            print(f"[SIC-FW] 警告: 政策文件路徑不在允許範圍內 {path}")
+            return {}
+        
+        # 检查路径是否包含上级目录访问符
+        if '..' in normalized_path.split('/'):
+            print(f"[SIC-FW] 警告: 政策文件路徑包含非法字符 {path}")
+            return {}
+            
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(normalized_path, 'r', encoding='utf-8') as f:
                 if path.endswith('.yaml') or path.endswith('.yml'):
                     return yaml.safe_load(f)
                 return json.load(f)
