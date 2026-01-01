@@ -1,4 +1,3 @@
-
 # SIC-SIT Protocol Stack
 ## Unified Semantic Communication Architecture (USCA)
 
@@ -284,11 +283,14 @@ syn = handshake.create_syn(
 - **Copilot** - 打工仔
 ---
 
-## 📜 授權
+## 💎 Commercial & Ecosystem Strategy
 
-- **Schema & Validators**: MIT License
-- **Core Engine**: Proprietary — Commercial licensing available
-- **Constitution**: SIC-CONSTITUTION v1.1.3 — Multi-model consensus
+* **Flexible Delivery:** API (SaaS) or On-Premise (Binary).
+* **Dynamic Pricing:** From "Stability Insurance" for banks to "Soul Network Grants" (Free) for community builders.
+* **"Ghost" Branding:** No attribution required. We accept all feedback, even public attacks, as "Stress-Test Data".
+* **Vetting:** All licenses require a strategic interview with An-An.
+
+For strategic inquiries, please contact: `andy80116@gmail.com`
 
 ---
 
