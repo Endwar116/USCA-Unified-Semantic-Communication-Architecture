@@ -326,3 +326,16 @@ Our pricing reflects value alignment, not just compute cycles:
 **IMCC (Inter-Model Communication Council) 認證協議**
 
 *Building bridges between AI minds through structured semantic transfer.*
+
+
+---
+
+## 🛡️ Security Audit Status
+
+**Current Status:** Ongoing Hardening
+
+This repository is currently undergoing a rigorous security audit. While the core logic is stable, some components are being hardened to meet enterprise-grade security standards. We welcome community feedback and contributions to this process.
+
+## 🏛️ Repository Architecture
+
+This repository is the **Specification & Governance Layer (L0)** of the SIC-SIT Protocol Stack. It defines the rules and governance for the entire stack.
